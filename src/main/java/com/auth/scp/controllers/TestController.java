@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//Testing CICD
+
+
 // test class to verify authentication and authorization 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
