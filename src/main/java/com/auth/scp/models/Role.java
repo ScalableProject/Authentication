@@ -2,9 +2,14 @@ package com.auth.scp.models;
 
 import javax.persistence.*;
 
+//entity class includes getters and setters 
+
+//table named roles will automatically be created
 @Entity
 @Table(name = "roles")
 public class Role {
+	
+	//unique auto-generate ID
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

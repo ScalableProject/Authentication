@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.auth.scp.models.User;
 
 
-
+//checking the existence by name and email
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByUsername(String username);

@@ -4,7 +4,10 @@ import java.util.Set;
 
 import javax.validation.constraints.*;
 
+//register request class
 public class SignupRequest {
+	
+	//username, email and password can't be blank
   @NotBlank
   @Size(min = 3, max = 20)
   private String username;

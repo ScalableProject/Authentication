@@ -15,20 +15,24 @@ import com.auth.scp.security.services.UserDetailsImpl;
 
 import io.jsonwebtoken.*;
 
+//generating jwt token and setting its specifications 
 @Component
 public class JwtUtils {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+  //secret key
   @Value("${scp.app.jwtSecret}")
   private String jwtSecret;
 
+  //Expiration of token 
   @Value("${scp.app.jwtExpirationMs}")
   private int jwtExpirationMs;
   
-
+//cookie name
   @Value("${scp.app.jwtCookieName}")
   private String jwtCookie;
 
+  //checking already stored cookie value
   public String getJwtFromCookies(HttpServletRequest request) {
     Cookie cookie = WebUtils.getCookie(request, jwtCookie);
     if (cookie != null) {
@@ -38,12 +42,14 @@ public class JwtUtils {
     }
   }
 
+  //token generated along with its path, age and security
   public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
     String jwt = generateTokenFromUsername(userPrincipal.getUsername());
     ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
     return cookie;
   }
 
+  //cleaning the cookie
   public ResponseCookie getCleanJwtCookie() {
     ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
     return cookie;
@@ -53,6 +59,7 @@ public class JwtUtils {
     return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
   }
 
+  //performing validation and provide related response 
   public boolean validateJwtToken(String authToken) {
     try {
       Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
@@ -72,6 +79,7 @@ public class JwtUtils {
     return false;
   }
   
+  //generating from username
   public String generateTokenFromUsername(String username) {   
     return Jwts.builder()
         .setSubject(username)

@@ -2,6 +2,7 @@ package com.auth.scp.payload.response;
 
 import java.util.List;
 
+// in response getting user details of person logged in
 public class UserInfoResponse {
 	private Long id;
 	private String username;

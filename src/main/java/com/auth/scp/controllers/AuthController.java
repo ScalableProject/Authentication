@@ -33,11 +33,15 @@ import com.auth.scp.repository.*;
 import com.auth.scp.security.jwt.JwtUtils;
 import com.auth.scp.security.services.UserDetailsImpl;
 
+//controller for accessing multiple methods
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	
+	//to access different methods and classes 
+	
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -53,9 +57,13 @@ public class AuthController {
   @Autowired
   JwtUtils jwtUtils;
 
+  
+  //post to perform sign-in action
+  
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
+	  //validating username and password with the values stored in db
     Authentication authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -63,12 +71,15 @@ public class AuthController {
 
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+    // generate JWT token if user input correct credentials
     ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
+    //store the use role to provide specific access
     List<String> roles = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
         .collect(Collectors.toList());
 
+    //store token in cookie along with other required details
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
         .body(new UserInfoResponse(userDetails.getId(),
                                    userDetails.getUsername(),
@@ -76,8 +87,13 @@ public class AuthController {
                                    roles));
   }
 
+  //POST request to register account 
+  
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	  
+	  //to check if user details already taken
+	  
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
     }
@@ -94,6 +110,7 @@ public class AuthController {
     Set<String> strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
 
+    //add user roles to their account and also to check that role must exist
     if (strRoles == null) {
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)
           .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -127,6 +144,8 @@ public class AuthController {
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 
+  //Post request to log user out and clean cookie which contains JWT token
+  
   @PostMapping("/signout")
   public ResponseEntity<?> logoutUser() {
     ResponseCookie cookie = jwtUtils.getCleanJwtCookie();

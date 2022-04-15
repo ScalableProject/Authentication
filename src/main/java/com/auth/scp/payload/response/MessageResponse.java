@@ -1,5 +1,6 @@
 package com.auth.scp.payload.response;
 
+//response messages
 public class MessageResponse {
 	  private String message;
 

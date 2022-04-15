@@ -2,7 +2,11 @@ package com.auth.scp.payload.request;
 
 import javax.validation.constraints.NotBlank;
 
+//login request class
 public class LoginRequest {
+	
+	//username and password can't be blank
+	
 	@NotBlank
   private String username;
 
